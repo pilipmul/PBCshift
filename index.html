@@ -125,20 +125,23 @@
         });
     }
 
-    document.getElementById('handoverForm').addEventListener('submit', async (e) => {
+document.getElementById('handoverForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSubmit');
         btn.disabled = true; btn.innerText = "Mengirim...";
 
         const payload = {
+            nama: userAktif.nama, // Menambahkan Nama dari data login
             tanggal: document.getElementById('f_tanggal').value,
             shift: document.getElementById('f_shift').value,
             divisi: userAktif.divisi,
             catatan: document.getElementById('f_catatan').value,
+            // Field CS
             cs_dalam: document.getElementById('f_cs_dalam')?.value || "",
             cs_luar: document.getElementById('f_cs_luar')?.value || "",
             cs_tps: document.getElementById('f_cs_tps')?.value || "",
             cs_alat: document.getElementById('f_cs_alat')?.value || "",
+            // Field SP
             sp_safety: document.getElementById('f_sp_safety')?.value || "",
             sp_guard: document.getElementById('f_sp_guard')?.value || "",
             sp_carcall: document.getElementById('f_sp_carcall')?.value || ""
@@ -150,9 +153,13 @@
                 mode: "no-cors",
                 body: JSON.stringify(payload)
             });
-            alert("Berhasil! Laporan telah masuk ke sistem.");
+            alert("Berhasil! Laporan atas nama " + userAktif.nama + " telah tersimpan.");
             location.reload();
-        } catch(e) { alert("Gagal kirim data"); btn.disabled = false; }
+        } catch(e) { 
+            alert("Gagal kirim data"); 
+            btn.disabled = false; 
+            btn.innerText = "KIRIM LAPORAN";
+        }
     });
 </script>
 </body>
