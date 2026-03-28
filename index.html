@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Serah Terima PBC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; padding-top: 20px; }
+        .hidden { display: none; }
+        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="container mb-5">
+    <div id="loginSection" class="card p-4 mx-auto" style="max-width: 400px;">
+        <h4 class="text-center mb-4">Login Staf PBC</h4>
+        <input type="password" id="pinInput" class="form-control mb-3 text-center" placeholder="Masukkan PIN 4 Digit" inputmode="numeric">
+        <button onclick="login()" id="btnLogin" class="btn btn-primary w-100">Masuk</button>
+    </div>
+
+    <div id="formSection" class="card p-4 hidden mx-auto" style="max-width: 600px;">
+        <h5 id="welcomeMsg" class="mb-3 text-primary"></h5>
+        <form id="mainForm">
+            <div class="mb-3">
+                <label class="form-label">Shift</label>
+                <select id="shift" class="form-select" required>
+                    <option value="Pagi">Pagi</option>
+                    <option value="Sore">Sore</option>
+                    <option value="Malam">Malam</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tanggal</label>
+                <input type="date" id="tanggal" class="form-control" required>
+            </div>
+
+            <div id="csFields" class="hidden">
+                <hr><h6>Laporan Cleaning Service</h6>
+                <div class="mb-3"><label>Area Dalam Gedung</label><input type="text" id="cs_dalam" class="form-control"></div>
+                <div class="mb-3"><label>Area Luar Gedung</label><input type="text" id="cs_luar" class="form-control"></div>
+                <div class="mb-3"><label>Status TPS</label><input type="text" id="cs_tps" class="form-control"></div>
+                <div class="mb-3"><label>Peralatan</label><input type="text" id="cs_alat" class="form-control"></div>
+            </div>
+
+            <div id="spFields" class="hidden">
+                <hr><h6>Laporan Security & Parkir</h6>
+                <div class="mb-3"><label>General Safety</label><input type="text" id="sp_safety" class="form-control"></div>
+                <div class="mb-3"><label>Guard Tour</label><input type="text" id="sp_guard" class="form-control"></div>
+                <div class="mb-3"><label>Car Call</label><input type="text" id="sp_carcall" class="form-control"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Catatan Umum / Handover</label>
+                <textarea id="catatan" class="form-control" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 mt-3">Kirim Laporan</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // GANTI URL INI DENGAN URL WEB APP GAS ANDA
+    const WEB_APP_URL = "URL_WEB_APP_GAS_ANDA_DI_SINI";
+    let userData = {};
+
+    async function login() {
+        const pin = document.getElementById('pinInput').value;
+        const btn = document.getElementById('btnLogin');
+        btn.disabled = true; btn.innerText = "Mengecek...";
+
+        try {
+            const response = await fetch(`${WEB_APP_URL}?pin=${pin}`);
+            const data = await response.json();
+
+            if(data.status === "success") {
+                userData = data;
+                showForm();
+            } else {
+                alert("PIN Salah!");
+                btn.disabled = false; btn.innerText = "Masuk";
+            }
+        } catch (e) { alert("Koneksi Gagal"); btn.disabled = false; }
+    }
+
+    function showForm() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+        document.getElementById('welcomeMsg').innerText = `Halo, ${userData.nama} (${userData.divisi})`;
+        document.getElementById('tanggal').valueAsDate = new Date();
+
+        // Logika Tampilkan Field Berdasarkan Divisi
+        if(userData.divisi === "CS") document.getElementById('csFields').classList.remove('hidden');
+        if(userData.divisi === "SP") document.getElementById('spFields').classList.remove('hidden');
+    }
+
+    document.getElementById('mainForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button');
+        submitBtn.disabled = true; submitBtn.innerText = "Mengirim...";
+
+        const payload = {
+            tanggal: document.getElementById('tanggal').value,
+            shift: document.getElementById('shift').value,
+            divisi: userData.divisi,
+            catatan: document.getElementById('catatan').value,
+            cs_dalam: document.getElementById('cs_dalam')?.value || "",
+            cs_luar: document.getElementById('cs_luar')?.value || "",
+            cs_tps: document.getElementById('cs_tps')?.value || "",
+            cs_alat: document.getElementById('cs_alat')?.value || "",
+            sp_safety: document.getElementById('sp_safety')?.value || "",
+            sp_guard: document.getElementById('sp_guard')?.value || "",
+            sp_carcall: document.getElementById('sp_carcall')?.value || ""
+        };
+
+        try {
+            await fetch("https://script.google.com/macros/s/AKfycbw6t0z1m3wIt_eyLpnIs4T_GaN80jI0bRpp8sThJWZkyxgsyiqZCaqY_3UuPDonun3Y/exec", {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(payload)
+            });
+            alert("Laporan Terkirim!");
+            location.reload();
+        } catch (e) { alert("Gagal mengirim data"); submitBtn.disabled = false; }
+    });
+</script>
+</body>
+</html>
