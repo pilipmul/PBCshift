@@ -3,127 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Serah Terima PBC</title>
+    <title>Form Serah Terima - PBC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f7f6; padding-top: 20px; }
+        body { background-color: #f0f2f5; font-family: sans-serif; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .hidden { display: none; }
-        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-pbc { background-color: #2c3e50; color: white; }
+        .btn-pbc:hover { background-color: #1a252f; color: white; }
     </style>
 </head>
-<body>
+<body class="p-3">
 
-<div class="container mb-5">
-    <div id="loginSection" class="card p-4 mx-auto" style="max-width: 400px;">
-        <h4 class="text-center mb-4">Login Staf PBC</h4>
-        <input type="password" id="pinInput" class="form-control mb-3 text-center" placeholder="Masukkan PIN 4 Digit" inputmode="numeric">
-        <button onclick="login()" id="btnLogin" class="btn btn-primary w-100">Masuk</button>
+<div class="container" style="max-width: 500px;">
+    <div id="loginBox" class="card p-4 mt-5">
+        <h4 class="text-center fw-bold mb-4">LOG-IN STAFF</h4>
+        <div class="mb-3">
+            <input type="password" id="pinInput" class="form-control form-control-lg text-center" placeholder="PIN 4 DIGIT" inputmode="numeric">
+        </div>
+        <button id="btnLogin" onclick="prosesLogin()" class="btn btn-pbc btn-lg w-100">MASUK</button>
     </div>
 
-    <div id="formSection" class="card p-4 hidden mx-auto" style="max-width: 600px;">
-        <h5 id="welcomeMsg" class="mb-3 text-primary"></h5>
-        <form id="mainForm">
-            <div class="mb-3">
-                <label class="form-label">Shift</label>
-                <select id="shift" class="form-select" required>
-                    <option value="Pagi">Pagi</option>
-                    <option value="Sore">Sore</option>
-                    <option value="Malam">Malam</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Tanggal</label>
-                <input type="date" id="tanggal" class="form-control" required>
-            </div>
-
-            <div id="csFields" class="hidden">
-                <hr><h6>Laporan Cleaning Service</h6>
-                <div class="mb-3"><label>Area Dalam Gedung</label><input type="text" id="cs_dalam" class="form-control"></div>
-                <div class="mb-3"><label>Area Luar Gedung</label><input type="text" id="cs_luar" class="form-control"></div>
-                <div class="mb-3"><label>Status TPS</label><input type="text" id="cs_tps" class="form-control"></div>
-                <div class="mb-3"><label>Peralatan</label><input type="text" id="cs_alat" class="form-control"></div>
-            </div>
-
-            <div id="spFields" class="hidden">
-                <hr><h6>Laporan Security & Parkir</h6>
-                <div class="mb-3"><label>General Safety</label><input type="text" id="sp_safety" class="form-control"></div>
-                <div class="mb-3"><label>Guard Tour</label><input type="text" id="sp_guard" class="form-control"></div>
-                <div class="mb-3"><label>Car Call</label><input type="text" id="sp_carcall" class="form-control"></div>
+    <div id="formBox" class="card p-4 hidden">
+        <h5 id="userTitle" class="text-primary fw-bold mb-1"></h5>
+        <p id="userSub" class="text-muted small mb-4"></p>
+        
+        <form id="handoverForm">
+            <div class="row g-2 mb-3">
+                <div class="col-7">
+                    <label class="small fw-bold">Tanggal</label>
+                    <input type="date" id="f_tanggal" class="form-control" required>
+                </div>
+                <div class="col-5">
+                    <label class="small fw-bold">Shift</label>
+                    <select id="f_shift" class="form-select" required></select>
+                </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Catatan Umum / Handover</label>
-                <textarea id="catatan" class="form-control" rows="3"></textarea>
+                <label class="small fw-bold">Catatan / Handover (all)</label>
+                <textarea id="f_catatan" class="form-control" rows="3" placeholder="Tulis instruksi atau masalah..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-success w-100 mt-3">Kirim Laporan</button>
+            <div id="divCS" class="hidden">
+                <div class="alert alert-info py-2 small fw-bold">FORM CLEANING SERVICE</div>
+                <div class="mb-2"><input type="text" id="f_cs_dalam" class="form-control" placeholder="Area Dalam Gedung"></div>
+                <div class="mb-2"><input type="text" id="f_cs_luar" class="form-control" placeholder="Area Luar Gedung"></div>
+                <div class="mb-2"><input type="text" id="f_cs_tps" class="form-control" placeholder="Status TPS"></div>
+                <div class="mb-2"><input type="text" id="f_cs_alat" class="form-control" placeholder="Peralatan"></div>
+            </div>
+
+            <div id="divSP" class="hidden">
+                <div class="alert alert-warning py-2 small fw-bold">FORM SECURITY & PARKIR</div>
+                <div class="mb-2"><input type="text" id="f_sp_safety" class="form-control" placeholder="General Safety"></div>
+                <div class="mb-2"><input type="text" id="f_sp_guard" class="form-control" placeholder="Guard Tour"></div>
+                <div class="mb-2"><input type="text" id="f_sp_carcall" class="form-control" placeholder="Car Call"></div>
+            </div>
+
+            <hr>
+            <button type="submit" id="btnSubmit" class="btn btn-success btn-lg w-100">KIRIM LAPORAN</button>
         </form>
     </div>
 </div>
 
 <script>
-    // GANTI URL INI DENGAN URL WEB APP GAS ANDA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw6t0z1m3wIt_eyLpnIs4T_GaN80jI0bRpp8sThJWZkyxgsyiqZCaqY_3UuPDonun3Y/exec";
-    let userData = {};
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw6t0z1m3wIt_eyLpnIs4T_GaN80jI0bRpp8sThJWZkyxgsyiqZCaqY_3UuPDonun3Y/exec";
+    let userAktif = {};
 
-    async function login() {
+    async function prosesLogin() {
         const pin = document.getElementById('pinInput').value;
         const btn = document.getElementById('btnLogin');
+        if(!pin) return;
+
         btn.disabled = true; btn.innerText = "Mengecek...";
-
+        
         try {
-            const response = await fetch(`${WEB_APP_URL}?pin=${pin}`);
-            const data = await response.json();
-
+            const res = await fetch(`${GAS_URL}?pin=${pin}`);
+            const data = await res.json();
+            
             if(data.status === "success") {
-                userData = data;
-                showForm();
+                userAktif = data;
+                renderForm();
             } else {
-                alert("PIN Salah!");
-                btn.disabled = false; btn.innerText = "Masuk";
+                alert("PIN SALAH!");
+                btn.disabled = false; btn.innerText = "MASUK";
             }
-        } catch (e) { alert("Koneksi Gagal"); btn.disabled = false; }
+        } catch(e) { alert("Gagal koneksi ke server"); btn.disabled = false; }
     }
 
-    function showForm() {
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('formSection').classList.remove('hidden');
-        document.getElementById('welcomeMsg').innerText = `Halo, ${userData.nama} (${userData.divisi})`;
-        document.getElementById('tanggal').valueAsDate = new Date();
+    function renderForm() {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('formBox').classList.remove('hidden');
+        document.getElementById('userTitle').innerText = userAktif.nama;
+        document.getElementById('userSub').innerText = `${userAktif.divisi} | Class: ${userAktif.class}`;
+        document.getElementById('f_tanggal').valueAsDate = new Date();
 
-        // Logika Tampilkan Field Berdasarkan Divisi
-        if(userData.divisi === "CS") document.getElementById('csFields').classList.remove('hidden');
-        if(userData.divisi === "SP") document.getElementById('spFields').classList.remove('hidden');
+        const shiftSelect = document.getElementById('f_shift');
+        const jam = new Date().getHours();
+        let listShift = [];
+        let def = "";
+
+        // Logika Shift Sesuai Divisi
+        if(userAktif.divisi === "CS") {
+            listShift = ["Pagi", "Siang", "Malam"];
+            document.getElementById('divCS').classList.remove('hidden');
+            if(jam >= 6 && jam < 14) def = "Pagi";
+            else if(jam >= 14 && jam < 22) def = "Siang";
+            else def = "Malam";
+        } else {
+            listShift = ["Pagi", "Malam"];
+            if(userAktif.divisi === "SP") document.getElementById('divSP').classList.remove('hidden');
+            if(jam >= 7 && jam < 19) def = "Pagi";
+            else def = "Malam";
+        }
+
+        listShift.forEach(s => {
+            let opt = document.createElement('option');
+            opt.value = s; opt.text = s;
+            if(s === def) opt.selected = true;
+            shiftSelect.add(opt);
+        });
     }
 
-    document.getElementById('mainForm').addEventListener('submit', async (e) => {
+    document.getElementById('handoverForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const submitBtn = e.target.querySelector('button');
-        submitBtn.disabled = true; submitBtn.innerText = "Mengirim...";
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true; btn.innerText = "Mengirim...";
 
         const payload = {
-            tanggal: document.getElementById('tanggal').value,
-            shift: document.getElementById('shift').value,
-            divisi: userData.divisi,
-            catatan: document.getElementById('catatan').value,
-            cs_dalam: document.getElementById('cs_dalam')?.value || "",
-            cs_luar: document.getElementById('cs_luar')?.value || "",
-            cs_tps: document.getElementById('cs_tps')?.value || "",
-            cs_alat: document.getElementById('cs_alat')?.value || "",
-            sp_safety: document.getElementById('sp_safety')?.value || "",
-            sp_guard: document.getElementById('sp_guard')?.value || "",
-            sp_carcall: document.getElementById('sp_carcall')?.value || ""
+            tanggal: document.getElementById('f_tanggal').value,
+            shift: document.getElementById('f_shift').value,
+            divisi: userAktif.divisi,
+            catatan: document.getElementById('f_catatan').value,
+            cs_dalam: document.getElementById('f_cs_dalam')?.value || "",
+            cs_luar: document.getElementById('f_cs_luar')?.value || "",
+            cs_tps: document.getElementById('f_cs_tps')?.value || "",
+            cs_alat: document.getElementById('f_cs_alat')?.value || "",
+            sp_safety: document.getElementById('f_sp_safety')?.value || "",
+            sp_guard: document.getElementById('f_sp_guard')?.value || "",
+            sp_carcall: document.getElementById('f_sp_carcall')?.value || ""
         };
 
         try {
-            await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
+            await fetch(GAS_URL, {
+                method: "POST",
+                mode: "no-cors",
                 body: JSON.stringify(payload)
             });
-            alert("Laporan Terkirim!");
+            alert("Berhasil! Laporan telah masuk ke sistem.");
             location.reload();
-        } catch (e) { alert("Gagal mengirim data"); submitBtn.disabled = false; }
+        } catch(e) { alert("Gagal kirim data"); btn.disabled = false; }
     });
 </script>
 </body>
