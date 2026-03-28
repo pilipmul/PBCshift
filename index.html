@@ -63,7 +63,7 @@
 
 <script>
     // GANTI URL INI DENGAN URL WEB APP GAS ANDA
-    const WEB_APP_URL = "URL_WEB_APP_GAS_ANDA_DI_SINI";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw6t0z1m3wIt_eyLpnIs4T_GaN80jI0bRpp8sThJWZkyxgsyiqZCaqY_3UuPDonun3Y/exec";
     let userData = {};
 
     async function login() {
@@ -116,7 +116,7 @@
         };
 
         try {
-            await fetch("https://script.google.com/macros/s/AKfycbw6t0z1m3wIt_eyLpnIs4T_GaN80jI0bRpp8sThJWZkyxgsyiqZCaqY_3UuPDonun3Y/exec", {
+            await fetch(WEB_APP_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 body: JSON.stringify(payload)
